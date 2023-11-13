@@ -8,13 +8,15 @@ function getMultiplePriceRange(selectedPrices) {
     let priceQuery = []
 
     if (selectedPrices.includes('0'))
-        priceQuery.push({ price: { $lt: 30000 } })
-    if (selectedPrices.includes('30000'))
-        priceQuery.push({ price: { $gte: 30000, $lt: 50000 } })
-    if (selectedPrices.includes('50000'))
-        priceQuery.push({ price: { $gte: 50000, $lt: 70000 } })
-    if (selectedPrices.includes('70000'))
-        priceQuery.push({ price: { $gte: 70000 } })
+        priceQuery.push({ price: { $lt: 40000 } })
+    if (selectedPrices.includes('40000'))
+        priceQuery.push({ price: { $gte: 40000, $lt: 60000 } })
+    if (selectedPrices.includes('60000'))
+        priceQuery.push({ price: { $gte: 60000, $lt: 80000 } })
+    if (selectedPrices.includes('80000'))
+        priceQuery.push({ price: { $gte: 80000, $lt: 100000 } })
+    if (selectedPrices.includes('100000'))
+        priceQuery.push({ price: { $gte: 100000 } })
 
     return priceQuery
 }
@@ -22,14 +24,16 @@ function getMultiplePriceRange(selectedPrices) {
 const getPriceRange = (price) => {
     let priceQuery = []
 
-    if (price < 30000)
-        priceQuery.push({ price: { $lt: 30000 } })
-    else if (price >= 30000 && price < 50000)
-        priceQuery.push({ price: { $gte: 30000, $lt: 50000 } })
-    else if (price >= 50000 && price < 70000)
-        priceQuery.push({ price: { $gte: 50000, $lt: 70000 } })
-    else if (price >= 70000)
-        priceQuery.push({ price: { $gte: 70000 } })
+    if (price < 40000)
+        priceQuery.push({ price: { $lt: 40000 } })
+    else if (price >= 40000 && price < 60000)
+        priceQuery.push({ price: { $gte: 40000, $lt: 60000 } })
+    else if (price >= 60000 && price < 80000)
+        priceQuery.push({ price: { $gte: 60000, $lt: 80000 } })
+    else if (price >= 80000 && price < 100000)
+        priceQuery.push({ price: { $gte: 80000, $lt: 100000 } })
+    else if (price >= 100000)
+        priceQuery.push({ price: { $gte: 100000 } })
     return priceQuery
 }
 

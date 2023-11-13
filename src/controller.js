@@ -12,7 +12,7 @@ const addLaptop = async (req, res) => {
 
 const getLaptops = async (req, res) => {
     try {
-        const laptops = await Laptop.find({})
+        const laptops = await Laptop.find({}).sort('-createdAt')
         res.status(200).json(laptops)
     } catch (error) {
         res.status(400).json({ error: error.message })
@@ -34,7 +34,7 @@ const getCaption = async (req, res) => {
     const { messageId } = req.params
     try {
         const laptop = await Laptop.findOne({ messageId }).select("caption")
-        if (!laptop) throw Error("can't find any post by this message id")
+        if (!laptop) throw Error("No product found with this message ID. It's possible that the product hasn't been published. /help")
         res.status(200).json(laptop)
     } catch (error) {
         res.status(400).json({ error: error.message })
@@ -69,6 +69,8 @@ const getSimilarProducts = async (req, res) => {
     try {
         //find the selected product data
         let product = await Laptop.findOne({ _id: id }).select("ram storage core price -_id")
+        if (!product) throw Error("Product not found")
+
         //price range
         const minPrice = product.price - 10000
         const maxPrice = product.price + 10000
@@ -94,8 +96,23 @@ const getSimilarProducts = async (req, res) => {
 
 //TODO-2 make it strong rest api [eg. ad custom error if(user.exists).]
 const addRecommendation = async (req, res) => {
+    let recommendation
+
     try {
-        const recommendation = await Recommendation.create(req.body)
+        const { userId } = req.body
+        const user = await Recommendation.findOne({ userId })
+
+        //if user exits update it else register them
+        if (user) {
+            recommendation = await Recommendation.findOneAndUpdate(
+                { userId },
+                req.body,
+                { runValidators: true, new: true }
+            )
+        } else {
+            recommendation = await Recommendation.create(req.body)
+        }
+
         res.status(201).json(recommendation)
     } catch (error) {
         res.status(400).json({ error: error.message })
@@ -120,11 +137,23 @@ const getUsersToRecommend = async (req, res) => {
     }
 }
 
+const userExists = async (req, res) => {
+    const userId = req.params.userId
+    try {
+        const user = await Recommendation.findOne({ userId })
+        res.status(201).json(user)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
+}
+
 const setSoldout = async (req, res) => {
     try {
         const id = req.params.id;
 
-        const updatedItem = await Laptop.findByIdAndUpdate(id, { inStock: false }, {
+        const product = await Laptop.findById(id)
+
+        const updatedItem = await Laptop.findByIdAndUpdate(id, { inStock: !product.inStock }, {
             new: true, // Return the updated document
         });
 
@@ -136,6 +165,19 @@ const setSoldout = async (req, res) => {
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+const deleteProduct = async (req, res) => {
+    const { id } = req.params
+    try {
+        const response = await Laptop.deleteOne({ messageId: id })
+        if (response.deletedCount === 0) {
+            throw Error("Product not found")
+        }
+        res.status(202).json(response)
+    } catch (error) {
+        res.status(400).json({ error: error.message })
     }
 }
 
@@ -170,10 +212,12 @@ module.exports = {
     getLaptop,
     getCaption,
     getFilteredProducts,
+    userExists,
     getSimilarProducts,
     addRecommendation,
     getUsersToRecommend,
     setSoldout,
     searchProduct,
+    deleteProduct,
     d
 }

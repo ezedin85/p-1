@@ -6,11 +6,14 @@ const { addLaptop,
     getCaption,
     getFilteredProducts,
     getSimilarProducts,
+    userExists,
     addRecommendation,
     d,
-    getUsersToRecommend, 
+    getUsersToRecommend,
     setSoldout,
-    searchProduct} = require('./controller');
+    searchProduct,
+    deleteProduct
+} = require('./controller');
 const requireAuth = require('./middleware');
 
 //Product
@@ -20,8 +23,10 @@ router.get('/get-laptop/:id', getLaptop)
 router.get('/search/:key', searchProduct)
 router.get('/get-caption/:messageId', requireAuth(), getCaption)
 router.get('/get-filtered-products', requireAuth(), getFilteredProducts)
+router.get('/user-exists/:userId', requireAuth(), userExists)
 router.get('/get-similar-products/:id', getSimilarProducts)
 router.patch('/sold-out/:id', requireAuth(), setSoldout)
+router.delete('/delete-product/:id', requireAuth(), deleteProduct)
 // router.delete('/d', d)
 
 //Recommendation

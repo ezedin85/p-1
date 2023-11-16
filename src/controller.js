@@ -168,6 +168,24 @@ const setSoldout = async (req, res) => {
     }
 }
 
+const updateValue = async (req, res) => {
+    try {
+        const messageId = req.params.messageId;
+        const updatedItem = await Laptop.findOneAndUpdate({messageId},  req.body , {
+            new: true, // Return the updated document
+        });
+
+        if (!updatedItem) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+
+        return res.status(200).json(updatedItem);
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
 const deleteProduct = async (req, res) => {
     const { id } = req.params
     try {
@@ -219,5 +237,6 @@ module.exports = {
     setSoldout,
     searchProduct,
     deleteProduct,
+    updateValue,
     d
 }

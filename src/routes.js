@@ -12,7 +12,8 @@ const { addLaptop,
     getUsersToRecommend,
     setSoldout,
     searchProduct,
-    deleteProduct
+    deleteProduct,
+    updateValue
 } = require('./controller');
 const requireAuth = require('./middleware');
 
@@ -26,6 +27,7 @@ router.get('/get-filtered-products', requireAuth(), getFilteredProducts)
 router.get('/user-exists/:userId', requireAuth(), userExists)
 router.get('/get-similar-products/:id', getSimilarProducts)
 router.patch('/sold-out/:id', requireAuth(), setSoldout)
+router.patch('/update-value/:messageId', requireAuth(), updateValue)
 router.delete('/delete-product/:id', requireAuth(), deleteProduct)
 // router.delete('/d', d)
 
